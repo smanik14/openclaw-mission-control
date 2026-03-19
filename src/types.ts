@@ -6,6 +6,8 @@ export interface Agent {
   lastTaskSummary: string;
   uptime: string;
   tasksCompleted: number;
+  avatar?: string;
+  costData?: AgentCost;
 }
 
 export interface Job {
@@ -68,4 +70,70 @@ export interface Action {
   runCount: number;
 }
 
+export interface ModelPricing {
+  modelId: string;
+  name: string;
+  provider: string;
+  inputPricePer1K: number;  // in USD
+  outputPricePer1K: number; // in USD
+  color: string;
+}
+
+export interface AgentCost {
+  agentId: string;
+  agentName: string;
+  currentModel: string;
+  tokensIn: number;
+  tokensOut: number;
+  estimatedCost: number; // in USD
+  costHistory: CostSnapshot[];
+}
+
+export interface CostSnapshot {
+  timestamp: Date;
+  tokensIn: number;
+  tokensOut: number;
+  cost: number;
+}
+
+export interface TeamCostSummary {
+  totalCost: number;
+  totalTokensIn: number;
+  totalTokensOut: number;
+  agentCosts: AgentCost[];
+  modelBreakdown: Record<string, number>;
+  dailyAverage: number;
+}
+
 export type Section = 'overview' | 'jobs' | 'logs' | 'git' | 'services' | 'actions' | 'settings';
+
+// Isometric office types
+export interface FurnitureItem {
+  id: string;
+  type: 'desk' | 'chair' | 'monitor' | 'coffeeMachine' | 'waterCooler' | 'beanBag' | 'plant' | 'bookshelf' | 'lamp' | 'rug';
+  x: number;
+  y: number;
+  z: number;
+  rotation?: number;
+  variant?: number;
+}
+
+export interface AgentPosition {
+  agentId: string;
+  x: number;
+  y: number;
+  z: number;
+  facing: 'north' | 'south' | 'east' | 'west';
+  zone: 'coffee' | 'main' | 'architect' | 'developer' | 'reviewer' | 'debugger';
+}
+
+export interface OfficeZone {
+  id: string;
+  name: string;
+  description: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: string;
+}

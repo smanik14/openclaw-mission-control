@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
+import { CozyOffice } from './components/CozyOffice';
 import { OverviewSection } from './components/OverviewSection';
 import { JobsSection } from './components/JobsSection';
 import { LogsSection } from './components/LogsSection';
@@ -14,7 +15,7 @@ function App() {
   const [activeSection, setActiveSection] = useState<Section>('overview');
 
   const sectionTitles: Record<Section, string> = {
-    overview: 'Overview',
+    overview: 'Office Workspace',
     jobs: 'Jobs',
     logs: 'Logs',
     git: 'Git',
@@ -25,7 +26,7 @@ function App() {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'overview':  return <OverviewSection />;
+      case 'overview':  return <CozyOffice />;
       case 'jobs':      return <JobsSection />;
       case 'logs':      return <LogsSection />;
       case 'git':       return <GitSection />;

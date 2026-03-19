@@ -1,4 +1,40 @@
-import type { Agent, Job, Log, GitStatus, Port, Service, Action } from './types';
+import type { Agent, Job, Log, GitStatus, Port, Service, Action, ModelPricing, AgentCost, TeamCostSummary, FurnitureItem, AgentPosition } from './types';
+
+// Model pricing data (USD per 1K tokens)
+export const modelPricing: ModelPricing[] = [
+  {
+    modelId: 'claude-sonnet-4',
+    name: 'Claude Sonnet 4',
+    provider: 'Anthropic',
+    inputPricePer1K: 0.003,
+    outputPricePer1K: 0.015,
+    color: '#D97706',
+  },
+  {
+    modelId: 'gpt-4o',
+    name: 'GPT-4o',
+    provider: 'OpenAI',
+    inputPricePer1K: 0.0025,
+    outputPricePer1K: 0.01,
+    color: '#10B981',
+  },
+  {
+    modelId: 'gpt-4o-mini',
+    name: 'GPT-4o Mini',
+    provider: 'OpenAI',
+    inputPricePer1K: 0.00015,
+    outputPricePer1K: 0.0006,
+    color: '#3B82F6',
+  },
+  {
+    modelId: 'claude-haiku',
+    name: 'Claude Haiku',
+    provider: 'Anthropic',
+    inputPricePer1K: 0.00025,
+    outputPricePer1K: 0.00125,
+    color: '#8B5CF6',
+  },
+];
 
 export const mockAgents: Agent[] = [
   {
@@ -9,6 +45,19 @@ export const mockAgents: Agent[] = [
     lastTaskSummary: 'Processing GitHub issue #234 - API endpoint optimization',
     uptime: '3d 12h 45m',
     tasksCompleted: 1247,
+    avatar: '🎯',
+    costData: {
+      agentId: 'agent-001',
+      agentName: 'Main Orchestrator',
+      currentModel: 'claude-sonnet-4',
+      tokensIn: 2450000,
+      tokensOut: 890000,
+      estimatedCost: 20.67,
+      costHistory: [
+        { timestamp: new Date(Date.now() - 86400000), tokensIn: 2100000, tokensOut: 750000, cost: 17.55 },
+        { timestamp: new Date(Date.now() - 172800000), tokensIn: 1800000, tokensOut: 620000, cost: 14.85 },
+      ],
+    },
   },
   {
     id: 'agent-002',
@@ -18,6 +67,18 @@ export const mockAgents: Agent[] = [
     lastTaskSummary: 'Completed PR review for feature/auth-refactor',
     uptime: '5d 2h 18m',
     tasksCompleted: 892,
+    avatar: '👁️',
+    costData: {
+      agentId: 'agent-002',
+      agentName: 'Code Reviewer',
+      currentModel: 'gpt-4o',
+      tokensIn: 1200000,
+      tokensOut: 450000,
+      estimatedCost: 7.50,
+      costHistory: [
+        { timestamp: new Date(Date.now() - 86400000), tokensIn: 980000, tokensOut: 380000, cost: 6.25 },
+      ],
+    },
   },
   {
     id: 'agent-003',
@@ -27,6 +88,16 @@ export const mockAgents: Agent[] = [
     lastTaskSummary: 'Investigating memory leak in worker thread',
     uptime: '1d 8h 33m',
     tasksCompleted: 456,
+    avatar: '🐛',
+    costData: {
+      agentId: 'agent-003',
+      agentName: 'Debugger',
+      currentModel: 'claude-sonnet-4',
+      tokensIn: 890000,
+      tokensOut: 320000,
+      estimatedCost: 7.47,
+      costHistory: [],
+    },
   },
   {
     id: 'agent-004',
@@ -36,6 +107,18 @@ export const mockAgents: Agent[] = [
     lastTaskSummary: 'Generated API docs for v2.3.0',
     uptime: '2d 14h 12m',
     tasksCompleted: 234,
+    avatar: '📝',
+    costData: {
+      agentId: 'agent-004',
+      agentName: 'Documentation',
+      currentModel: 'gpt-4o-mini',
+      tokensIn: 2100000,
+      tokensOut: 1800000,
+      estimatedCost: 1.40,
+      costHistory: [
+        { timestamp: new Date(Date.now() - 86400000), tokensIn: 1800000, tokensOut: 1500000, cost: 1.17 },
+      ],
+    },
   },
   {
     id: 'agent-005',
@@ -45,8 +128,52 @@ export const mockAgents: Agent[] = [
     lastTaskSummary: 'Dependency vulnerability scan failed - timeout',
     uptime: '0d 0h 45m',
     tasksCompleted: 567,
+    avatar: '🔒',
+    costData: {
+      agentId: 'agent-005',
+      agentName: 'Security Scanner',
+      currentModel: 'claude-sonnet-4',
+      tokensIn: 450000,
+      tokensOut: 120000,
+      estimatedCost: 3.15,
+      costHistory: [],
+    },
+  },
+  {
+    id: 'agent-006',
+    name: 'Architect',
+    status: 'busy',
+    currentModel: 'claude-sonnet-4',
+    lastTaskSummary: 'Designing microservices architecture for new module',
+    uptime: '4d 6h 20m',
+    tasksCompleted: 178,
+    avatar: '🏗️',
+    costData: {
+      agentId: 'agent-006',
+      agentName: 'Architect',
+      currentModel: 'claude-sonnet-4',
+      tokensIn: 1680000,
+      tokensOut: 620000,
+      estimatedCost: 14.34,
+      costHistory: [
+        { timestamp: new Date(Date.now() - 86400000), tokensIn: 1400000, tokensOut: 520000, cost: 11.98 },
+      ],
+    },
   },
 ];
+
+export const teamCostSummary: TeamCostSummary = {
+  totalCost: 54.53,
+  totalTokensIn: 8670000,
+  totalTokensOut: 3980000,
+  agentCosts: mockAgents.map(a => a.costData!).filter(Boolean),
+  modelBreakdown: {
+    'claude-sonnet-4': 45.63,
+    'gpt-4o': 13.75,
+    'gpt-4o-mini': 2.57,
+  },
+  dailyAverage: 18.21,
+};
 
 export const mockJobs: Job[] = [
   {
@@ -313,4 +440,67 @@ export const systemMetrics = {
   cpuUsage: 34,
   memoryUsage: 62,
   diskUsage: 45,
+};
+
+// Isometric office furniture layout
+export const officeFurniture: FurnitureItem[] = [
+  // Coffee corner (bottom-left)
+  { id: 'furn-001', type: 'coffeeMachine', x: 80, y: 320, z: 0 },
+  { id: 'furn-002', type: 'plant', x: 40, y: 360, z: 0, variant: 1 },
+  { id: 'furn-003', type: 'beanBag', x: 120, y: 380, z: 0 },
+  { id: 'furn-004', type: 'rug', x: 100, y: 350, z: -1 },
+  
+  // Main center area
+  { id: 'furn-005', type: 'desk', x: 300, y: 280, z: 0, rotation: 0 },
+  { id: 'furn-006', type: 'chair', x: 300, y: 320, z: 0, rotation: 0 },
+  { id: 'furn-007', type: 'monitor', x: 300, y: 270, z: 10, rotation: 0 },
+  { id: 'furn-008', type: 'lamp', x: 260, y: 260, z: 10 },
+  
+  // Architect design corner (top-left)
+  { id: 'furn-009', type: 'desk', x: 120, y: 120, z: 0, rotation: 45 },
+  { id: 'furn-010', type: 'chair', x: 150, y: 150, z: 0, rotation: 45 },
+  { id: 'furn-011', type: 'monitor', x: 110, y: 110, z: 10, rotation: 45 },
+  { id: 'furn-012', type: 'bookshelf', x: 60, y: 80, z: 0 },
+  { id: 'furn-013', type: 'plant', x: 180, y: 90, z: 0, variant: 2 },
+  
+  // Developer coding station (top-right)
+  { id: 'furn-014', type: 'desk', x: 480, y: 140, z: 0, rotation: -45 },
+  { id: 'furn-015', type: 'chair', x: 450, y: 170, z: 0, rotation: -45 },
+  { id: 'furn-016', type: 'monitor', x: 490, y: 130, z: 10, rotation: -45 },
+  { id: 'furn-017', type: 'monitor', x: 470, y: 120, z: 10, rotation: -30 },
+  { id: 'furn-018', type: 'plant', x: 520, y: 100, z: 0, variant: 3 },
+  
+  // Reviewer quiet corner (middle-right)
+  { id: 'furn-019', type: 'desk', x: 500, y: 300, z: 0, rotation: 90 },
+  { id: 'furn-020', type: 'chair', x: 460, y: 300, z: 0, rotation: 90 },
+  { id: 'furn-021', type: 'monitor', x: 510, y: 300, z: 10, rotation: 90 },
+  { id: 'furn-022', type: 'bookshelf', x: 550, y: 250, z: 0 },
+  { id: 'furn-023', type: 'plant', x: 540, y: 350, z: 0, variant: 1 },
+  
+  // Debugger terminal (bottom-right)
+  { id: 'furn-024', type: 'desk', x: 450, y: 420, z: 0, rotation: 180 },
+  { id: 'furn-025', type: 'chair', x: 450, y: 380, z: 0, rotation: 180 },
+  { id: 'furn-026', type: 'monitor', x: 450, y: 430, z: 10, rotation: 180 },
+  { id: 'furn-027', type: 'monitor', x: 430, y: 435, z: 10, rotation: 200 },
+  { id: 'furn-028', type: 'waterCooler', x: 520, y: 400, z: 0 },
+  { id: 'furn-029', type: 'plant', x: 380, y: 440, z: 0, variant: 2 },
+];
+
+// Agent positions in isometric space
+export const agentPositions: AgentPosition[] = [
+  { agentId: 'agent-001', x: 300, y: 300, z: 0, facing: 'north', zone: 'main' },
+  { agentId: 'agent-006', x: 135, y: 135, z: 0, facing: 'south', zone: 'architect' },
+  { agentId: 'agent-003', x: 465, y: 155, z: 0, facing: 'west', zone: 'developer' },
+  { agentId: 'agent-002', x: 480, y: 300, z: 0, facing: 'west', zone: 'reviewer' },
+  { agentId: 'agent-005', x: 450, y: 400, z: 0, facing: 'north', zone: 'debugger' },
+  { agentId: 'agent-004', x: 140, y: 380, z: 0, facing: 'east', zone: 'coffee' },
+];
+
+export const zoneColors: Record<string, string> = {
+  coffee: '#D4A574',
+  main: '#C49A3B',
+  architect: '#8B6914',
+  developer: '#A67B2D',
+  reviewer: '#6B9E75',
+  debugger: '#4A7C59',
 };
